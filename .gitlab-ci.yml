@@ -1,5 +1,5 @@
 variables:
-  HEROKU_APP_NAME: <APP_NAME>
+  HEROKU_APP_NAME: dosbackend
 
 stages:
   - deploy
