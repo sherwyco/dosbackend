@@ -27,5 +27,3 @@ COPY . .
 RUN adduser -D myuser
 USER myuser
 
-# run gunicorn
-CMD gunicorn dosbackend.wsgi:application --bind 0.0.0.0:$PORT
