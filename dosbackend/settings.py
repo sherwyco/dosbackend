@@ -27,14 +27,14 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "dosbackend.herokuapp.com"]
 
 # for email
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = 'dos.nyc.org@gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+DEFAULT_FROM_EMAIL = "dos.nyc.org@gmail.com"
 
 # Application definition
 
@@ -46,14 +46,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "users",
-    'graphene_django',
+    "graphene_django",
     "graphql_auth",
-    'django_filters',
+    "django_filters",
     # refresh tokens are optional
-    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    "phonenumber_field",
 ]
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = "users.CustomUser"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -63,19 +63,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'dosbackend.schema.schema', # this file doesn't exist yet
-    'MIDDLEWARE': [
-        'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    ],
+    "SCHEMA": "dosbackend.schema.schema",  # this file doesn't exist yet
+    "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
 }
 AUTHENTICATION_BACKENDS = [
     "graphql_auth.backends.GraphQLAuthBackend",
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
 ]
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
