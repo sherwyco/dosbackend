@@ -1,4 +1,4 @@
-from users.models import  CustomUser
+from users.models import CustomUser
 from graphene_django.types import DjangoObjectType
 import graphene
 
