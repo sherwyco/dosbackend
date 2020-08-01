@@ -26,6 +26,8 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "dosbackend.herokuapp.com"]
 
+EVENTTOOLS_REPEAT_CHOICES = None
+
 # for email
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 EMAIL_HOST = "smtp.sendgrid.net"
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
     "phonenumber_field",
 ]
 AUTH_USER_MODEL = "users.CustomUser"
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -67,7 +70,7 @@ MIDDLEWARE = [
 ]
 
 GRAPHENE = {
-    "SCHEMA": "dosbackend.schema.schema",  # this file doesn't exist yet
+    "SCHEMA": "dosbackend.schema.schema",
     "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
 }
 AUTHENTICATION_BACKENDS = [
