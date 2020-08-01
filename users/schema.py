@@ -1,12 +1,7 @@
 from users.models import *
 from graphene_django.types import DjangoObjectType
 import graphene
-
-# class EnumArg(graphene.Enum):
-#     Daily = 'RRULE:FREQ=DAILY'
-#     Weekly = 'RRULE:FREQ=WEEKLY'
-#     Monthly = "RRULE:FREQ=MONTHLY"
-#     Yearly = 'RRULE:FREQ=YEARLY'
+from graphene import relay
 
 
 class UserType(DjangoObjectType):
@@ -17,16 +12,22 @@ class UserType(DjangoObjectType):
 class NotificationType(DjangoObjectType):
     class Meta:
         model = UserNotification
+        interfaces = (relay.Node,)
+
+
+class NotificationConnection(relay.Connection):
+    class Meta:
+        node = NotificationType
 
 
 class ScheduleType(DjangoObjectType):
     class Meta:
         model = Schedule
 
-    next_events = graphene.String()
+    next_event = graphene.DateTime()
 
-    def resolve_extra_field(self, info):
-        return self.next()
+    def resolve_next_event(self, info):
+        return Schedule.next(self)
 
 
 class PickUpType(DjangoObjectType):
@@ -36,7 +37,7 @@ class PickUpType(DjangoObjectType):
 
 class Query(object):
     schedules = graphene.List(ScheduleType)
-    notifications = graphene.List(NotificationType)
+    notifications = relay.ConnectionField(NotificationConnection)
     pick_up_info = graphene.List(PickUpType)
 
 
@@ -101,6 +102,20 @@ class DeleteNotification(graphene.Mutation):
     def mutate(cls, root, info, **kwargs):
         obj = UserNotification.objects.get(id=kwargs['id'])
         obj.delete()
+        return cls(success=True)
+
+
+class SeenNotification(graphene.Mutation):
+    """ Set notification to seen """
+    success = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.UUID(required=True)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        obj = UserNotification.objects.get(id=kwargs['id'])
+        setattr(obj, 'seen', True)
         return cls(success=True)
 
 

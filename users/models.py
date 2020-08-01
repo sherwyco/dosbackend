@@ -45,7 +45,8 @@ class Schedule(BaseOccurrence):
     event = models.ForeignKey(PickUpInfo, on_delete=models.CASCADE)
 
     def next(self):
-        return self.next_occurrence()[1]
+        next_date = self.next_occurrence()
+        return next_date[0] if next_date else None
 
 
 class Address(models.Model):
@@ -67,6 +68,7 @@ class UserSettings(models.Model):
     user = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
     reminder = models.BooleanField('Remind me when a pickup is scheduled for the following day', default=False)
     notify = models.BooleanField('Notify me when a DoS employee has picked up my bin(s) for a pickup', default=False)
+    seen = models.BooleanField(default=False)
 
 
 class UserNotification(models.Model):
