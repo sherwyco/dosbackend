@@ -41,7 +41,7 @@ class PickUpInfo(BaseEvent):
 
 
 class Schedule(BaseOccurrence):
-    customer_id = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
     event = models.ForeignKey(PickUpInfo, on_delete=models.CASCADE)
 
     def next(self):
@@ -50,7 +50,7 @@ class Schedule(BaseOccurrence):
 
 
 class Address(models.Model):
-    customer = models.ForeignKey(CustomUser, blank=False, null=False, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, blank=False, null=False, on_delete=models.CASCADE)
     street_name = models.CharField(max_length=1024, null=False, blank=False)
     city = models.CharField(max_length=1024)
     state = models.CharField(max_length=2, blank=True)

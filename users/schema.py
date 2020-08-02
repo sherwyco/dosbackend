@@ -41,31 +41,37 @@ class Query(object):
     pick_up_info = graphene.List(PickUpType)
 
 
+class PickUpInput(graphene.InputObjectType):
+    bin_type = graphene.String()
+    lbs = graphene.Float()
+    instructions = graphene.String()
+
+
+class ScheduleInput(graphene.InputObjectType):
+    start = graphene.DateTime()
+    end = graphene.DateTime()
+    repeat = graphene.String()
+    repeat_until = graphene.Date()
+    user_id = graphene.ID()
+    event = graphene.Field(PickUpInput)
+
+
 class CreateSchedule(graphene.Mutation):
     """Create a schedule for the pick up"""
-    success = graphene.Boolean()
-
     class Arguments:
-        start = graphene.DateTime(required=True)
-        end = graphene.DateTime(required=False, default_value=None)
-        repeat = graphene.String(required=False, default_value='')
-        repeat_until = graphene.Date(required=False, default_value=None)
-        customer_id = graphene.ID(required=True)
-        event_id = graphene.ID(required=True)  # id of pickup
+        schedule_data = ScheduleInput(required=True)
     schedule = graphene.Field(ScheduleType)
 
-    @classmethod
-    def mutate(cls, root, info, **kwargs):
-        customer_instance = CustomUser.objects.get(id=kwargs['customer_id'])
-        pickup_instance = PickUpInfo.objects.get(id=kwargs['event_id'])
-        end = kwargs.get('end', None)
-        get_repeat = kwargs.get('repeat', None)
-        repeat = 'RRULE:FREQ=%s' % get_repeat if get_repeat else ""
-        repeat_until = kwargs.get('repeat_until', None)
-        schedule = Schedule(start=kwargs['start'], end=end, customer_id=customer_instance,
-                            event=pickup_instance, repeat=repeat, repeat_until=repeat_until)
-        schedule.save()
-        return cls(success=True, schedule=schedule)
+    def mutate(root, info, schedule_data=None):
+        schedule = Schedule(
+            start=schedule_data.start,
+            end=schedule_data.end,
+            repeat=schedule_data.repeat,
+            repeat_until=schedule_data.repeat_until,
+            user=CustomUser.objects.get(pk=schedule_data.user_id),
+            event=PickUpInfo.objects.create(**schedule_data.event)
+        )
+        return CreateSchedule(schedule=schedule)
 
 
 class CreatePickUp(graphene.Mutation):

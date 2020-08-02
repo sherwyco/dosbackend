@@ -18,7 +18,7 @@ def complete_pickup(modeladmin, request, queryset):
     now = timezone.now()
     for obj in queryset:
         if obj.next_occurrence()[0] <= now:
-            notify = UserNotification(user=obj.customer_id, notification_type=1,
+            notify = UserNotification(user=obj.user, notification_type=1,
                                       message='Pick up no: %s completed!' % obj.event.id)
             notify.save()
             return messages.add_message(request, messages.SUCCESS, 'Notification sent to User(s)!')
@@ -27,7 +27,7 @@ def complete_pickup(modeladmin, request, queryset):
 
 
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer_id', 'event', 'start', 'end', 'next', 'repeat', 'repeat_until']
+    list_display = ['id', 'user', 'event', 'start', 'end', 'next', 'repeat', 'repeat_until']
     actions = [complete_pickup]
 
 
@@ -36,7 +36,7 @@ class PickUpInfoAdmin(admin.ModelAdmin):
 
 
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ['customer', 'street_name', 'state', 'zip_code', 'city']
+    list_display = ['user', 'street_name', 'state', 'zip_code', 'city']
 
 
 class UserNotificationAdmin(admin.ModelAdmin):
