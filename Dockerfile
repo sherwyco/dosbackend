@@ -16,6 +16,7 @@ COPY --from=build-python requirements.txt .
 RUN pip install --no-cache /wheels/*
 WORKDIR /app
 COPY . .
+CMD python manage.py migrate
 RUN python manage.py collectstatic --noinput
 RUN adduser -D myuser
 USER myuser
