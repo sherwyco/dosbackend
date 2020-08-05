@@ -46,7 +46,7 @@ test:
     - python manage.py test
     - flake8 dosbackend --max-line-length=100
     - black dosbackend --check
-    - isort -rc dosbackend
+    - isort dosbackend
 
 deploy:
   stage: deploy
