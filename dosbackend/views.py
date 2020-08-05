@@ -1,6 +1,7 @@
-from .schema import Mutation
-from graphene import Schema
 from django.shortcuts import HttpResponse
+from graphene import Schema
+
+from .schema import Mutation
 
 
 def verify_account(request, token):

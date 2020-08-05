@@ -1,6 +1,7 @@
 import graphene
-from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
+from graphql_auth.schema import MeQuery, UserQuery
+
 import users.schema
 
 
