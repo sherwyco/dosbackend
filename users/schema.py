@@ -63,6 +63,7 @@ class CreateSchedule(graphene.Mutation):
     class Arguments:
         schedule_data = ScheduleInput(required=True)
     schedule = graphene.Field(ScheduleType)
+    success = graphene.Boolean()
 
     def mutate(root, info, schedule_data=None):
         schedule_data.event.info['user'] = CustomUser.objects.get(pk=info.context.user.id)
@@ -76,7 +77,7 @@ class CreateSchedule(graphene.Mutation):
             event=Event.objects.create(info=pickup_info)
         )
         schedule.save()
-        return CreateSchedule(schedule=schedule)
+        return CreateSchedule(schedule=schedule, success=True)
 
 
 class CreatePickUp(graphene.Mutation):

@@ -19,7 +19,7 @@ def complete_pickup(modeladmin, request, queryset):
     for obj in queryset:
         if obj.next_occurrence()[0] <= now:
             notify = UserNotification(user=obj.user, notification_type=1,
-                                      message='Pick up no: %s completed!' % obj.event.id)
+                                      message='Pick up event no: %s completed!' % obj.event.id)
             notify.save()
             return messages.add_message(request, messages.SUCCESS, 'Notification sent to User(s)!')
         else:
