@@ -5,14 +5,17 @@ from .schema import Mutation
 
 
 def verify_account(request, token):
-    mutation = ("""mutation {
+    mutation = (
+        """mutation {
          verifyAccount(
         token: "%s",
         ) {
             success, errors
             }
         }
-    """ % token)
+    """
+        % token
+    )
     schema = Schema(mutation=Mutation)
     result = schema.execute(mutation)
     tuple_list = list(result.data.items())

@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     # refresh tokens are optional
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "phonenumber_field",
-
 ]
 AUTH_USER_MODEL = "users.CustomUser"
 
