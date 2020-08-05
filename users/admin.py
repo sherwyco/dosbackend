@@ -31,8 +31,12 @@ class ScheduleAdmin(admin.ModelAdmin):
     actions = [complete_pickup]
 
 
+class EventAdmin(admin.ModelAdmin):
+    list_display = ['info']
+
+
 class PickUpInfoAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'bin_type', 'lbs', 'instructions']
+    list_display = ['user', 'bin_type', 'lbs', 'instructions']
 
 
 class AddressAdmin(admin.ModelAdmin):
@@ -52,4 +56,5 @@ admin.site.register(UserNotification, UserNotificationAdmin)
 admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Address, AddressAdmin)
 admin.site.register(PickUpInfo, PickUpInfoAdmin)
+admin.site.register(Event, EventAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)

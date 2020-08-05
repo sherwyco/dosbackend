@@ -1,12 +1,13 @@
 from users.models import *
 from graphene_django.types import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 import graphene
 from graphene import relay
 
 
-class UserType(DjangoObjectType):
+class AddressType(DjangoObjectType):
     class Meta:
-        model = CustomUser
+        model = Address
 
 
 class NotificationType(DjangoObjectType):
@@ -15,14 +16,10 @@ class NotificationType(DjangoObjectType):
         interfaces = (relay.Node,)
 
 
-class NotificationConnection(relay.Connection):
-    class Meta:
-        node = NotificationType
-
-
 class ScheduleType(DjangoObjectType):
     class Meta:
         model = Schedule
+        interfaces = (relay.Node,)
 
     next_event = graphene.DateTime()
 
@@ -33,12 +30,14 @@ class ScheduleType(DjangoObjectType):
 class PickUpType(DjangoObjectType):
     class Meta:
         model = PickUpInfo
+        interfaces = (relay.Node,)
 
 
 class Query(object):
     schedules = graphene.List(ScheduleType)
-    notifications = relay.ConnectionField(NotificationConnection)
+    notifications = graphene.List(NotificationType)
     pick_up_info = graphene.List(PickUpType)
+    address = graphene.List(AddressType)
 
 
 class PickUpInput(graphene.InputObjectType):
@@ -47,13 +46,16 @@ class PickUpInput(graphene.InputObjectType):
     instructions = graphene.String()
 
 
+class EventInput(graphene.InputObjectType):
+    info = graphene.Field(PickUpInput)
+
+
 class ScheduleInput(graphene.InputObjectType):
     start = graphene.DateTime()
     end = graphene.DateTime()
     repeat = graphene.String()
     repeat_until = graphene.Date()
-    user_id = graphene.ID()
-    event = graphene.Field(PickUpInput)
+    event = graphene.Field(EventInput)
 
 
 class CreateSchedule(graphene.Mutation):
@@ -63,14 +65,17 @@ class CreateSchedule(graphene.Mutation):
     schedule = graphene.Field(ScheduleType)
 
     def mutate(root, info, schedule_data=None):
+        schedule_data.event.info['user'] = CustomUser.objects.get(pk=info.context.user.id)
+        pickup_info = PickUpInfo.objects.create(**schedule_data.event.info)
         schedule = Schedule(
             start=schedule_data.start,
             end=schedule_data.end,
             repeat=schedule_data.repeat,
             repeat_until=schedule_data.repeat_until,
-            user=CustomUser.objects.get(pk=schedule_data.user_id),
-            event=PickUpInfo.objects.create(**schedule_data.event)
+            user=CustomUser.objects.get(pk=info.context.user.id),
+            event=Event.objects.create(info=pickup_info)
         )
+        schedule.save()
         return CreateSchedule(schedule=schedule)
 
 
@@ -90,6 +95,7 @@ class CreatePickUp(graphene.Mutation):
     def mutate(cls, root, info, **kwargs):
         instructions = kwargs.get('instructions', '')
         pick_up = PickUpInfo(
+            user=CustomUser.objects.get(pk=info.context.user.id),
             bin_type=kwargs['bin_type'],
             lbs=kwargs['lbs'],
             instructions=instructions)

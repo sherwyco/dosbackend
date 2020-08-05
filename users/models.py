@@ -19,7 +19,7 @@ class CustomUser(AbstractUser):
     phone_number = PhoneNumberField(blank=True, default=None, null=True, help_text='e.g +1 123 234 5678')
 
 
-class PickUpInfo(BaseEvent):
+class PickUpInfo(models.Model):
     bin_types = (
         ('Compost', 'Compost'),
         ('Landfill', 'Landfill'),
@@ -32,17 +32,25 @@ class PickUpInfo(BaseEvent):
         ('Aluminum Cans/Containers', 'Aluminum Cans/Containers'),
         ('E-waste', 'E-waste')
     )
-    bin_type = models.CharField(choices=bin_types, max_length=255, null=False, blank=False)
+    user = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
+    bin_type = models.CharField(choices=bin_types, max_length=255, blank=False)
     lbs = models.FloatField(null=False, blank=False, default=0.0)
     instructions = models.CharField(max_length=250, blank=True)
 
     def __str__(self):
-        return '%d: %s' % (self.pk, self.bin_type)
+        return '%s: %s' % (self.user, self.bin_type)
+
+
+class Event(BaseEvent):
+    info = models.ForeignKey(PickUpInfo, null=False, blank=False, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '%s: %s' % (self.info.user.username, self.info.bin_type)
 
 
 class Schedule(BaseOccurrence):
     user = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
-    event = models.ForeignKey(PickUpInfo, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, null=False, blank=False, on_delete=models.CASCADE)
 
     def next(self):
         next_date = self.next_occurrence()
@@ -50,18 +58,16 @@ class Schedule(BaseOccurrence):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(CustomUser, blank=False, null=False, on_delete=models.CASCADE)
-    street_name = models.CharField(max_length=1024, null=False, blank=False)
-    city = models.CharField(max_length=1024)
-    state = models.CharField(max_length=2, blank=True)
-    zip_code = models.CharField(max_length=12, null=False, blank=False)
-    country = models.CharField(max_length=3)
+    user = models.ForeignKey(CustomUser, blank=False, on_delete=models.CASCADE)
+    street_name = models.CharField(max_length=1024, blank=False)
+    city = models.CharField(max_length=189, blank=False)
+    state = models.CharField(max_length=189, blank=False)
+    zip_code = models.CharField(max_length=18, blank=False)
+    country = models.CharField(max_length=90, blank=False)
 
     def get_full_address(self):
         if self.state:
             return '%s, %s, %s, %s, %s' % (self.street_name, self.zip_code, self.city, self.state, self.country)
-        else:
-            return '%s, %s, %s, %s' % (self.street_name, self.zip_code, self.city, self.country)
 
 
 class UserSettings(models.Model):
