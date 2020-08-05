@@ -1,6 +1,5 @@
 from django.shortcuts import HttpResponse
 from graphene import Schema
-
 from .schema import Mutation
 
 
