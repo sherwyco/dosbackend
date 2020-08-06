@@ -26,6 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "dosbackend.herokuapp.com"]
+CORS_ORIGIN_ALLOW_ALL = True
 
 EVENTTOOLS_REPEAT_CHOICES = None
 
@@ -57,6 +58,9 @@ INSTALLED_APPS = [
     # refresh tokens are optional
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "phonenumber_field",
+    # use for dev
+    'corsheaders',
+
 ]
 AUTH_USER_MODEL = "users.CustomUser"
 
@@ -70,6 +74,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # use for dev
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 GRAPHENE = {

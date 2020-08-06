@@ -87,21 +87,17 @@ class CreatePickUp(graphene.Mutation):
     class Arguments:
         bin_type = graphene.String(required=True)
         lbs = graphene.Float(required=True)
-        instructions = graphene.String(required=False, default_value=None)
+        instructions = graphene.String(required=False)
 
     # The class attributes define the response of the mutation
     pick_up = graphene.Field(PickUpType)
 
-    @classmethod
-    def mutate(cls, root, info, **kwargs):
-        instructions = kwargs.get('instructions', '')
+    def mutate(root, info, **kwargs):
         pick_up = PickUpInfo(
             user=CustomUser.objects.get(pk=info.context.user.id),
-            bin_type=kwargs['bin_type'],
-            lbs=kwargs['lbs'],
-            instructions=instructions)
+            **kwargs)
         pick_up.save()
-        return cls(success=True, pick_up=pick_up)
+        return CreatePickUp(success=True, pick_up=pick_up)
 
 
 class DeleteNotification(graphene.Mutation):
