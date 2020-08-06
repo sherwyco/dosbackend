@@ -59,8 +59,7 @@ INSTALLED_APPS = [
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "phonenumber_field",
     # use for dev
-    'corsheaders',
-
+    "corsheaders",
 ]
 AUTH_USER_MODEL = "users.CustomUser"
 
@@ -75,7 +74,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # use for dev
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 GRAPHENE = {
