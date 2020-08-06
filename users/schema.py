@@ -28,9 +28,13 @@ class ScheduleType(DjangoObjectType):
 
 
 class PickUpType(DjangoObjectType):
+    # just add this line
+    id = graphene.ID(source='pk', required=True)
+
     class Meta:
         model = PickUpInfo
         interfaces = (relay.Node,)
+        convert_choices_to_enum = False
 
 
 class Query(object):
