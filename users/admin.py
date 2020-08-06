@@ -36,7 +36,7 @@ class EventAdmin(admin.ModelAdmin):
 
 
 class PickUpInfoAdmin(admin.ModelAdmin):
-    list_display = ['user', 'bin_type', 'lbs', 'instructions']
+    list_display = ['id', 'user', 'bin_type', 'lbs', 'instructions']
 
 
 class AddressAdmin(admin.ModelAdmin):

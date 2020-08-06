@@ -104,6 +104,34 @@ class CreatePickUp(graphene.Mutation):
         return CreatePickUp(success=True, pick_up=pick_up)
 
 
+class UpdatePickUp(graphene.Mutation):
+    """ edit pick up object """
+    success = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.ID(required=True)
+        bin_type = graphene.String(required=False)
+        lbs = graphene.Float(required=False)
+        instructions = graphene.String(required=False)
+
+    def mutate(root, info, **kwargs):
+        PickUpInfo.objects.filter(pk=kwargs['id']).update(**kwargs)
+        return UpdatePickUp(success=True)
+
+
+class DeletePickUp(graphene.Mutation):
+    """ Delete pick up object """
+    success = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        PickUpInfo.objects.filter(id=kwargs['id']).delete()
+        return cls(success=True)
+
+
 class DeleteNotification(graphene.Mutation):
     """ Delete the notification of a user"""
     success = graphene.Boolean()
@@ -113,8 +141,7 @@ class DeleteNotification(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, **kwargs):
-        obj = UserNotification.objects.get(id=kwargs['id'])
-        obj.delete()
+        UserNotification.objects.filter(id=kwargs['id']).delete()
         return cls(success=True)
 
 
@@ -127,12 +154,13 @@ class SeenNotification(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info, **kwargs):
-        obj = UserNotification.objects.get(id=kwargs['id'])
-        setattr(obj, 'seen', True)
+        UserNotification.objects.filter(id=kwargs['id']).update(seen=True)
         return cls(success=True)
 
 
 class Mutation(object):
     delete_notification = DeleteNotification.Field()
     create_pickup = CreatePickUp.Field()
+    update_pickup = UpdatePickUp.Field()
+    delete_pickup = DeletePickUp.Field()
     create_schedule = CreateSchedule.Field()
