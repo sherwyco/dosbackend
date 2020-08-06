@@ -87,7 +87,7 @@ class CreatePickUp(graphene.Mutation):
     class Arguments:
         bin_type = graphene.String(required=True)
         lbs = graphene.Float(required=True)
-        instructions = graphene.String(required=False)
+        instructions = graphene.String(required=False, default_value='')
 
     # The class attributes define the response of the mutation
     pick_up = graphene.Field(PickUpType)
