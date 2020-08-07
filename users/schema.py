@@ -17,6 +17,14 @@ class NotificationType(DjangoObjectType):
         interfaces = (relay.Node,)
 
 
+class UserSettingsType(DjangoObjectType):
+    id = graphene.ID(source='pk', required=True)
+
+    class Meta:
+        model = UserSettings
+        interfaces = (relay.Node,)
+
+
 class EventType(DjangoObjectType):
     class Meta:
         model = Event
@@ -185,6 +193,20 @@ class SeenNotification(graphene.Mutation):
         return cls(success=True)
 
 
+class EditUserSettings(graphene.Mutation):
+    success = graphene.Boolean()
+
+    class Arguments:
+        id = graphene.ID()
+        notify = graphene.Boolean()
+        reminder = graphene.Boolean()
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        UserSettings.objects.filter(pk=kwargs['id']).update(**kwargs)
+        return cls(success=True)
+
+
 class Mutation(object):
     delete_notification = DeleteNotification.Field()
     create_pickup = CreatePickUp.Field()
@@ -192,3 +214,4 @@ class Mutation(object):
     delete_pickup = DeletePickUp.Field()
     create_schedule = CreateSchedule.Field()
     delete_schedule = DeleteSchedule.Field()
+    edit_user_settings = EditUserSettings.Field()
