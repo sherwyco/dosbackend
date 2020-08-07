@@ -17,13 +17,20 @@ def complete_pickup(modeladmin, request, queryset):
     """ this will send notification to user's about their scheduled pickup """
     now = timezone.now()
     for obj in queryset:
-        if obj.next_occurrence()[0] <= now:
-            notify = UserNotification(user=obj.user, notification_type=1,
-                                      message='Pick up event no: %s completed!' % obj.event.id)
-            notify.save()
-            return messages.add_message(request, messages.SUCCESS, 'Notification sent to User(s)!')
+        if obj.next_occurrence():
+            # create object for completed pick up table
+            CompletedPickUp.objects.create(user=CustomUser.objects.get(pk=obj.user.pk),
+                                           pick_up_info=PickUpInfo.objects.get(pk=obj.event.info.pk),
+                                           pick_up_date=now)
+            if obj.next_occurrence()[0] <= now:
+                notify = UserNotification(user=obj.user, notification_type=1,
+                                          message='Pick up event no: %s completed!' % obj.event.id)
+                notify.save()
+                return messages.add_message(request, messages.SUCCESS, 'Notification sent to User(s)!')
+            else:
+                return messages.add_message(request, messages.ERROR, 'Pickup at %s is still far away!' % obj.start)
         else:
-            return messages.add_message(request, messages.ERROR, 'Pickup at %s is still far away!' % obj.start)
+            return messages.add_message(request, messages.ERROR, 'Unable for pick up!')
 
 
 class ScheduleAdmin(admin.ModelAdmin):
@@ -39,12 +46,16 @@ class PickUpInfoAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'bin_type', 'lbs', 'instructions']
 
 
+class CompletedPickUpAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'pick_up_info', 'pick_up_date']
+
+
 class AddressAdmin(admin.ModelAdmin):
     list_display = ['user', 'street_name', 'state', 'zip_code', 'city']
 
 
 class UserNotificationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'notification_type', 'message']
+    list_display = ['id', 'user', 'notification_type', 'message', 'seen', 'created_date']
 
 
 class UserSettingsAdmin(admin.ModelAdmin):
@@ -56,5 +67,6 @@ admin.site.register(UserNotification, UserNotificationAdmin)
 admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Address, AddressAdmin)
 admin.site.register(PickUpInfo, PickUpInfoAdmin)
+admin.site.register(CompletedPickUp, CompletedPickUpAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)

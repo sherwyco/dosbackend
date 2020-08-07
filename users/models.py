@@ -41,6 +41,15 @@ class PickUpInfo(models.Model):
         return '%s: %s' % (self.user, self.bin_type)
 
 
+class CompletedPickUp(models.Model):
+    user = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
+    pick_up_info = models.ForeignKey(PickUpInfo, null=False, blank=False, on_delete=models.CASCADE)
+    pick_up_date = models.DateTimeField(null=False, blank=False)
+
+    def __str__(self):
+        return '%s: date picked up: %s' % (self.pick_up_info, self.pick_up_date)
+
+
 class Event(BaseEvent):
     info = models.ForeignKey(PickUpInfo, null=False, blank=False, on_delete=models.CASCADE)
 
@@ -55,6 +64,9 @@ class Schedule(BaseOccurrence):
     def next(self):
         next_date = self.next_occurrence()
         return next_date[0] if next_date else None
+
+    def get_event_id(self):
+        return self.event.pk
 
 
 class Address(models.Model):
@@ -71,10 +83,9 @@ class Address(models.Model):
 
 
 class UserSettings(models.Model):
-    user = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
     reminder = models.BooleanField('Remind me when a pickup is scheduled for the following day', default=False)
     notify = models.BooleanField('Notify me when a DoS employee has picked up my bin(s) for a pickup', default=False)
-    seen = models.BooleanField(default=False)
 
 
 class UserNotification(models.Model):
@@ -87,3 +98,5 @@ class UserNotification(models.Model):
     user = models.ForeignKey(CustomUser, null=False, blank=False, on_delete=models.CASCADE)
     notification_type = models.IntegerField(choices=Type.choices, default=3)
     message = models.TextField(null=False, blank=False)
+    seen = models.BooleanField(default=False)
+    created_date = models.DateField(auto_now_add=True)
