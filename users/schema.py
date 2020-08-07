@@ -12,6 +12,8 @@ class AddressType(DjangoObjectType):
 
 
 class NotificationType(DjangoObjectType):
+    # id = graphene.ID(source='pk')
+
     class Meta:
         model = UserNotification
         interfaces = (relay.Node,)
@@ -208,6 +210,7 @@ class EditUserSettings(graphene.Mutation):
 
 
 class Mutation(object):
+    mark_notification = SeenNotification.Field()
     delete_notification = DeleteNotification.Field()
     create_pickup = CreatePickUp.Field()
     update_pickup = UpdatePickUp.Field()
