@@ -25,7 +25,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "dosbackend.herokuapp.com", "https://dos-app-nyc.herokuapp.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "dosbackend.herokuapp.com"]
+
+CORS_ORIGIN_WHITELIST = ["https://dos-app-nyc.herokuapp.com"]
 
 EVENTTOOLS_REPEAT_CHOICES = None
 
@@ -49,7 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # use for generating er diagram
-    'django_extensions',
+    "django_extensions",
     "users",
     "graphene_django",
     "graphql_auth",
@@ -57,7 +59,7 @@ INSTALLED_APPS = [
     # refresh tokens are optional
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "phonenumber_field",
-   # "corsheaders",
+    "corsheaders",
 ]
 AUTH_USER_MODEL = "users.CustomUser"
 
