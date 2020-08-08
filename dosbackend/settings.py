@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "phonenumber_field",
     "corsheaders",
-    'import_export',
+    "import_export",
 ]
 AUTH_USER_MODEL = "users.CustomUser"
 
