@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # use for generating er diagram
-    "django_extensions",
+    # "django_extensions",
     "users",
     "graphene_django",
     "graphql_auth",
