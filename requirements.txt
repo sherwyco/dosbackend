@@ -11,6 +11,7 @@ phonenumberslite==8.12.7
 django-eventtools==1.0.0
 graphene==2.1.8
 django-cors-headers==3.4.0
+django-import-export==2.3.0
 
 # dev and test
 black==19.3b0

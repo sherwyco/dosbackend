@@ -3,6 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from .models import *
 from django.utils import timezone
 from django.contrib import messages
+from import_export.admin import ImportExportModelAdmin
+from import_export import resources
 
 
 class CustomUserAdmin(UserAdmin):
@@ -42,12 +44,24 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ['info']
 
 
-class PickUpInfoAdmin(admin.ModelAdmin):
+class PickUpResource(resources.ModelResource):
+    class Meta:
+        model = PickUpInfo
+
+
+class PickUpInfoAdmin(ImportExportModelAdmin):
     list_display = ['id', 'user', 'bin_type', 'lbs', 'instructions']
+    resource_class = PickUpResource
 
 
-class CompletedPickUpAdmin(admin.ModelAdmin):
+class CompletedPickUpResource(resources.ModelResource):
+    class Meta:
+        model = CompletedPickUp
+
+
+class CompletedPickUpAdmin(ImportExportModelAdmin):
     list_display = ['id', 'user', 'pick_up_info', 'pick_up_date']
+    resource_class = CompletedPickUpResource
 
 
 class AddressAdmin(admin.ModelAdmin):

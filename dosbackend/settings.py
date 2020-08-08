@@ -27,7 +27,7 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "dosbackend.herokuapp.com"]
 
-CORS_ORIGIN_WHITELIST = ["https://dos-app-nyc.herokuapp.com"]
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "https://dos-app-nyc.herokuapp.com"]
 
 EVENTTOOLS_REPEAT_CHOICES = None
 
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "phonenumber_field",
     "corsheaders",
+    'import_export',
 ]
 AUTH_USER_MODEL = "users.CustomUser"
 

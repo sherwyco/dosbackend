@@ -18,6 +18,15 @@ class CustomUser(AbstractUser):
     EMAIL_FIELD = "email"         # e.g: "email", "primary_email"
     phone_number = PhoneNumberField(blank=True, default=None, null=True, help_text='e.g +1 123 234 5678')
 
+    def save(self, *args, **kwargs):
+        created = self.pk is None
+        super(CustomUser, self).save(*args, **kwargs)
+        if created:
+            print('before user settings', UserSettings.objects.all())
+            user_settings = UserSettings(user=self)
+            user_settings.save()
+            print('after user settings', UserSettings.objects.all())
+
 
 class PickUpInfo(models.Model):
     bin_types = (
@@ -70,7 +79,7 @@ class Schedule(BaseOccurrence):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(CustomUser, blank=False, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, blank=False, on_delete=models.CASCADE)
     street_name = models.CharField(max_length=1024, blank=False)
     city = models.CharField(max_length=189, blank=False)
     state = models.CharField(max_length=189, blank=False)
