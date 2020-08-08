@@ -22,10 +22,8 @@ class CustomUser(AbstractUser):
         created = self.pk is None
         super(CustomUser, self).save(*args, **kwargs)
         if created:
-            print('before user settings', UserSettings.objects.all())
             user_settings = UserSettings(user=self)
             user_settings.save()
-            print('after user settings', UserSettings.objects.all())
 
 
 class PickUpInfo(models.Model):
