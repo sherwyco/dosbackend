@@ -1,9 +1,7 @@
 from users.models import *
 from graphene_django.types import DjangoObjectType
-from graphene_django.filter import DjangoFilterConnectionField
 import graphene
 from graphene import relay
-from datetime import datetime
 
 
 class AddressType(DjangoObjectType):
@@ -209,6 +207,41 @@ class EditUserSettings(graphene.Mutation):
         return cls(success=True)
 
 
+class AddressInput(graphene.InputObjectType):
+    address_line1 = graphene.String()
+    address_line2 = graphene.String()
+    city = graphene.String()
+    state = graphene.String()
+    zip_code = graphene.String()
+    country = graphene.String()
+
+
+class CreateAddress(graphene.Mutation):
+    """Create a schedule for the pick up"""
+    class Arguments:
+        address_input = AddressInput(required=True)
+    address = graphene.Field(AddressType)
+    success = graphene.Boolean()
+
+    def mutate(root, info, address_input=None):
+        address_input['user'] = CustomUser.objects.get(pk=info.context.user.id)
+        address = Address(**address_input)
+        address.save()
+        return CreateAddress(address=address, success=True)
+
+
+class EditAddress(graphene.Mutation):
+    """ Edit address of a user """
+    class Arguments:
+        address_input = AddressInput()
+    success = graphene.Boolean()
+    address = graphene.Field(AddressType)
+
+    def mutate(root, info, address_input=None):
+        Address.objects.filter(user__id=info.context.user.id).update(**address_input)
+        return EditAddress(success=True, address=Address.objects.get(user__id=info.context.user.id))
+
+
 class Mutation(object):
     mark_notification = SeenNotification.Field()
     delete_notification = DeleteNotification.Field()
@@ -218,3 +251,5 @@ class Mutation(object):
     create_schedule = CreateSchedule.Field()
     delete_schedule = DeleteSchedule.Field()
     edit_user_settings = EditUserSettings.Field()
+    create_address = CreateAddress.Field()
+    edit_address = EditAddress.Field()

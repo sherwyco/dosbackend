@@ -27,7 +27,7 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "dosbackend.herokuapp.com"]
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "https://dos-app-nyc.herokuapp.com"]
+CORS_ORIGIN_WHITELIST = ["http://localhost:3001", "https://dos-app-nyc.herokuapp.com"]
 
 EVENTTOOLS_REPEAT_CHOICES = None
 
@@ -85,6 +85,13 @@ AUTHENTICATION_BACKENDS = [
     "graphql_auth.backends.GraphQLAuthBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+GRAPHQL_AUTH = {
+    'LOGIN_ALLOWED_FIELDS': ['email', 'username'],
+     "UPDATE_MUTATION_FIELDS" : ["first_name", "last_name", "phone_number", "type"],
+}
+
+
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     # optional

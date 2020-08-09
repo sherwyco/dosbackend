@@ -65,7 +65,7 @@ class CompletedPickUpAdmin(ImportExportModelAdmin):
 
 
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ['user', 'street_name', 'state', 'zip_code', 'city']
+    list_display = ['user', 'address_line1', 'address_line2', 'state', 'zip_code', 'city', 'country']
 
 
 class UserNotificationAdmin(admin.ModelAdmin):

@@ -7,10 +7,10 @@ import uuid
 
 class CustomUser(AbstractUser):
     user_types = (
-        ('Individual', 'Individual'),
-        ('Bulk', 'Bulk'),
-        ('Commercial', 'Commercial'),
-        ('Industrial', 'Industrial')
+        ('INDIVIDUAL', 'INDIVIDUAL'),
+        ('BULK', 'BULK'),
+        ('COMMERCIAL', 'COMMERCIAL'),
+        ('INDUSTRIAL', 'INDUSTRIAL')
     )
     email = models.EmailField(blank=False, max_length=254, verbose_name="email address")
     type = models.CharField(choices=user_types, max_length=100, default='Individual')
@@ -22,8 +22,8 @@ class CustomUser(AbstractUser):
         created = self.pk is None
         super(CustomUser, self).save(*args, **kwargs)
         if created:
-            user_settings = UserSettings(user=self)
-            user_settings.save()
+            UserSettings.objects.create(user=self)
+            Address.objects.create(user=self)
 
 
 class PickUpInfo(models.Model):
@@ -78,11 +78,12 @@ class Schedule(BaseOccurrence):
 
 class Address(models.Model):
     user = models.OneToOneField(CustomUser, blank=False, on_delete=models.CASCADE)
-    street_name = models.CharField(max_length=1024, blank=False)
-    city = models.CharField(max_length=189, blank=False)
-    state = models.CharField(max_length=189, blank=False)
-    zip_code = models.CharField(max_length=18, blank=False)
-    country = models.CharField(max_length=90, blank=False)
+    address_line1 = models.CharField(max_length=1024, blank=True)
+    address_line2 = models.CharField(max_length=1024, blank=True)
+    city = models.CharField(max_length=189, blank=True)
+    state = models.CharField(max_length=189, blank=True)
+    zip_code = models.CharField(max_length=18, blank=True)
+    country = models.CharField(max_length=90, blank=True)
 
     def get_full_address(self):
         if self.state:
