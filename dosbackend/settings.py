@@ -61,7 +61,18 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "corsheaders",
     "import_export",
+    'django_nose',
+
 ]
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=dosbackend,users',
+]
+
 AUTH_USER_MODEL = "users.CustomUser"
 
 MIDDLEWARE = [
