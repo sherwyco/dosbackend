@@ -87,8 +87,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 GRAPHQL_AUTH = {
-    'LOGIN_ALLOWED_FIELDS': ['email', 'username'],
-     "UPDATE_MUTATION_FIELDS" : ["first_name", "last_name", "phone_number", "type"],
+    "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "UPDATE_MUTATION_FIELDS": ["first_name", "last_name", "phone_number", "type"],
 }
 
 
