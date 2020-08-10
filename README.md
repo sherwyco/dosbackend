@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/cryptic20/dos-app.svg?branch=master)](https://travis-ci.org/cryptic20/dos-app)
 ## backend is being hosted at : https://dosbackend.herokuapp.com/admin
 
 # To run locally using docker
